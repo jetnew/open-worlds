@@ -1,6 +1,6 @@
 # Open Worlds
 
-Open Worlds is a MMO grid world where players deploy agents to survive in an online world.
+Open Worlds is a MMO grid world game where players deploy agents to survive in an online world.
 
 ## TL;DR: How it works
 1. The server runs constantly with an internal clock.
