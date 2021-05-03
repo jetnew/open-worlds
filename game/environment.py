@@ -2,8 +2,8 @@ import random
 import numpy as np
 
 
-dim_x, dim_y = 10, 10
-n_fruits = 10
+dim_x, dim_y = 30, 30
+n_fruits = 30
 
 class World:
     def __init__(self, dim_x=dim_x, dim_y=dim_y, n_fruits=n_fruits):

@@ -2,8 +2,10 @@ import time
 import json
 import socket
 import threading
-from entities import *
-from environment import *
+from game.entities import *
+from game.environment import *
+from game.util import *
+from fastapi import FastAPI
 
 # World config
 dim_x, dim_y = 20, 20
@@ -14,7 +16,6 @@ def test_game(world):
     """Test game of 2 agents (8 and 9) to be run within a thread."""
     global actions
     while True:
-        print(f"Player actions: {actions}")
         world.step(actions=actions)
         time.sleep(1)
 
@@ -78,13 +79,24 @@ def player_connection(connection, address, player_id):
 host = ""
 port = 12345
 
-# Server listener
-player_id = 0
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((host, port))
-    s.listen()
-    while True:
-        connection, address = s.accept()
-        print(f"Connected to: {address[0]}:{address[1]}")
-        threading.Thread(target=player_connection, args=(connection, address, player_id)).start()
-        player_id += 1
+# Client listener
+def client_listener():
+    player_id = 8
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((host, port))
+        s.listen()
+        while True:
+            connection, address = s.accept()
+            print(f"Connected to: {address[0]}:{address[1]}")
+            threading.Thread(target=player_connection, args=(connection, address, player_id)).start()
+            player_id += 1
+
+threading.Thread(target=client_listener).start()
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return get_world_state(world)
+    # world_model = convert_world_model(world)
+    # return world_model
