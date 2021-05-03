@@ -17,12 +17,12 @@ Open Worlds is a MMO grid world game where players deploy agents to survive in a
 ```
 git clone https://github.com/jetnew/open-worlds.git
 pip install requirements.txt
-uvicorn agent.server:app --port 8000
-uvicorn game.server:app --port 8001
+python server.py
+python client.py
 ```
 
 ## Upcoming Plans
 In order of priority:
-1. Improve game display latency.
-2. Log running time for each component.
-3. Add more game mechanics.
+1. Create fast game display.
+2. Add more game mechanics.
+3. Simplify player agent creation.
