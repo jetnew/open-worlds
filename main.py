@@ -1,5 +1,5 @@
-from server.environment import *
-from server.entities import *
+from game.environment import *
+from game.entities import *
 
 # World parameters
 dim_x, dim_y = 10, 10

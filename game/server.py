@@ -1,11 +1,12 @@
 import threading
 from fastapi import FastAPI
 
-from server.util import *
+from game.util import *
 
 # Start game thread
 world = World()
-game = threading.Thread(target=random_game, args=(world,))
+# game = threading.Thread(target=random_game, args=(world,))
+game = threading.Thread(target=test_game, args=(world,))
 game.start()
 
 # FastAPI endpoint
