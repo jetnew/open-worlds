@@ -11,4 +11,4 @@ def read_root():
 
 @app.post("/action/")
 def get_action(state: WorldModel):
-    return {"action": random.randint(0, 4)}
+    return {"action": random.randint(1, 4)}
