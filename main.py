@@ -1,6 +1,5 @@
-import random
-from environment import *
-from entities import *
+from server.environment import *
+from server.entities import *
 
 # World parameters
 dim_x, dim_y = 10, 10

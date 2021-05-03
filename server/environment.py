@@ -7,6 +7,7 @@ n_fruits = 10
 
 class World:
     def __init__(self, dim_x=dim_x, dim_y=dim_y, n_fruits=n_fruits):
+        self.time = 0
         self.dim_x, self.dim_y = dim_x, dim_y
         self.agents = []
         self.n_fruits = n_fruits
@@ -40,7 +41,8 @@ class World:
         for i, action in enumerate(actions):
             agent = self.agents[i]
             result = agent.act(action, self.state)
-            print(f"Agent {agent.idx} {result}.")
+            print(f"{self.time}: Agent {agent.idx} {result}.")
+        self.time += 1
     def __repr__(self):
         assert self.state is not None
         return str(self.state)
