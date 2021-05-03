@@ -1,7 +1,7 @@
 import threading
 from fastapi import FastAPI
 
-from util import *
+from server.util import *
 
 # Start game thread
 world = World()

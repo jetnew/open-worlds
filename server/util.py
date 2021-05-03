@@ -3,8 +3,8 @@ import time
 from typing import List
 from pydantic import BaseModel
 
-from environment import *
-from entities import *
+from server.environment import *
+from server.entities import *
 
 
 # Random game (used as game thread)
