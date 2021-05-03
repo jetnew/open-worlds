@@ -23,8 +23,6 @@ uvicorn game.server:app --port 8001
 
 ## Upcoming Plans
 In order of priority:
-1. Deploy the server.
-2. Deploy a bot agent.
-3. Deploy the game display.
-4. Accept players' agents via cURL.
-5. Add more game mechanics.
+1. Improve game display latency.
+2. Log running time for each component.
+3. Add more game mechanics.
