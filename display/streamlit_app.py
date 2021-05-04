@@ -4,7 +4,8 @@ import requests
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
-import os, psutil
+import os
+import psutil
 get_ram = lambda: psutil.Process(os.getpid()).memory_info().rss // 1e6
 
 st.title("Open Worlds")
