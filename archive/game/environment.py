@@ -1,7 +1,7 @@
 import random
 import json
 import numpy as np
-from game.entities import *
+from entities import *
 
 
 class World:
@@ -37,9 +37,9 @@ class World:
         self.agents[agent.idx] = agent
         self.state[agent.y, agent.x] = agent.idx
     def remove_agent(self, agent_id):
-        if agent_id in self.agents:
-            agent = self.agents.pop(agent_id)
-            self.state[agent.y, agent.x] = 0
+        agent = self.agents.pop(agent_id)
+        self.state[agent.y, agent.x] = 0
+        self.agents.pop(agent_id)
     def step(self, actions):
         for agent_id, action in actions.items():
             agent = self.agents[agent_id]

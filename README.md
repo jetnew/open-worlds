@@ -1,8 +1,6 @@
-# Open Worlds [WIP]
+# Open Worlds
 
 Open Worlds is a MMO grid world game where players deploy agents to survive in an online world.
-
-![screenshot](assets/screenshot.png)
 
 ## TL;DR: How it works
 1. The server runs constantly with an internal clock.
@@ -19,18 +17,12 @@ Open Worlds is a MMO grid world game where players deploy agents to survive in a
 ```
 git clone https://github.com/jetnew/open-worlds.git
 pip install requirements.txt
-uvicorn game.server:app --reload --port 50500
-python agent/client.py
-python display/server.py
+uvicorn agent.server:app --port 8000
+uvicorn game.server:app --port 8001
 ```
 
 ## Upcoming Plans
 In order of priority:
-1. Create fast game display.
-2. Add more game mechanics.
-3. Simplify player agent creation.
-
-## Why Open Worlds?
-* Existing script-based games (in particular: screeps.com) host players' scripts on their own game servers, limiting the amount of compute available and restricting the usage of AI agents.
-  By allowing players to script directly from their local server, agent compute is distributed to players, allowing deployment of AI agents.
-* Existing AI-based MMO (in particular: Neural MMO) is focused on research, so they do not host a dedicated online game server.
+1. Improve game display latency.
+2. Log running time for each component.
+3. Add more game mechanics.
