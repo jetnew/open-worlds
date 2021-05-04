@@ -9,10 +9,13 @@ import psutil
 get_ram = lambda: psutil.Process(os.getpid()).memory_info().rss // 1e6
 
 st.title("Open Worlds")
+st.text("Open Worlds is a MMO grid world game where players deploy agents to survive in an online world.")
 st_time = st.empty()
 st_scores = st.empty()
 st_state = st.empty()
 st_ram = st.empty()
+st.markdown("[GitHub](https://github.com/jetnew/open-worlds)")
+
 fig, ax = plt.subplots()
 
 response = requests.get('https://open-worlds.herokuapp.com/')
