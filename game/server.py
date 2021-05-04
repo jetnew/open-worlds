@@ -1,102 +1,74 @@
 import time
-import json
 import socket
 import threading
-from game.entities import *
 from game.environment import *
-from game.util import *
 from fastapi import FastAPI
+import uvicorn
 
-# World config
-dim_x, dim_y = 20, 20
-n_fruits = 20
-actions = {}
-
-def test_game(world):
-    """Test game of 2 agents (8 and 9) to be run within a thread."""
-    global actions
-    while True:
-        world.step(actions=actions)
-        time.sleep(1)
-
-# Start game thread
-world = World(dim_x=dim_x, dim_y=dim_y, n_fruits=n_fruits)
-game = threading.Thread(target=test_game, args=(world,))
-game.start()
-
-
-def get_world_state(world):
-    world_state = {
-        "time": world.time,
-        "state": world.state.tolist(),
-        "scores": {agent_id: agent.score for agent_id, agent in world.agents.items()}
-    }
-    return world_state
-
-def encode_world_state(world_state):
-    return bytes(json.dumps(world_state), encoding='utf-8')
-
-def decode_action(response):
-    return json.loads(response.decode('utf-8'))['action']
-
-def disconnect_player(address, world, actions, player_id):
-    actions.pop(player_id)
-    world.agents.pop(player_id)
-    print(f'Disconnected from: {address[0]}:{address[1]}')
-
-
-# Connection Thread
-def player_connection(connection, address, player_id):
-    agent = Agent(idx=player_id, x=5, y=5)
-    world.add_agent(agent)
-    actions[player_id] = 0
-    with connection:
+class GameServer:
+    def __init__(self, host="", port=12345, dim_x=30, dim_y=30, n_fruits=30):
+        self.host = host
+        self.port = port
+        self.actions = {}
+        self.world = World(dim_x, dim_y, n_fruits)
+        self.agent_ids = []
+    def game_thread(self):
         while True:
-            # Send world state
-            world_state = get_world_state(world)
-            encoded_state = encode_world_state(world_state)
-
-            # Delay before sending
+            self.world.step(actions=self.actions)
             time.sleep(1)
-            try:
-                connection.send(encoded_state)
-            except ConnectionResetError:
-                break
+    def start_game(self):
+        threading.Thread(target=self.game_thread).start()
+    def decode_action(self, response):
+        return json.loads(response.decode('utf-8'))['action']
+    def disconnect_player(self, address, agent_id):
+        self.world.remove_agent(agent_id)
+        self.agent_ids.remove(agent_id)
+        print(f"Agent {agent_id} ({address[0]}:{address[1]}) has disconnected.")
+    def connection_thread(self, connection, address, agent_id):
+        self.world.add_agent(agent_id)
+        with connection:
+            while True:
+                # Send world state and receive agent response
+                encoded_state = self.world.get_encoded_world_state()
+                try:
+                    connection.send(encoded_state)
+                    response = connection.recv(1024)
+                except ConnectionResetError:
+                    break
+                if not response:
+                    break
 
-            # Receive agent response
-            response = connection.recv(1024)
-            if not response:
-                break
+                # Execute action in game world
+                action = self.decode_action(response)
+                self.actions[agent_id] = action
 
-            # Execute action in game world
-            action = decode_action(response)
-            actions[player_id] = action
+                time.sleep(0.2)
+        # Disconnect player
+        self.disconnect_player(address, agent_id)
+    def listen_for_clients(self):
+        # Listener thread
+        def client_listener():
+            agent_id = 8
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.bind((self.host, self.port))
+                s.listen()
+                while True:
+                    connection, address = s.accept()
+                    print(f"Agent {agent_id} ({address[0]}:{address[1]}) has connected.")
+                    self.agent_ids.append(agent_id)
+                    threading.Thread(target=self.connection_thread, args=(connection, address, agent_id)).start()
+                    agent_id += 1
+        threading.Thread(target=client_listener).start()
 
-    # Disconnect player
-    disconnect_player(address, world, actions, player_id)
-
-# Connection config
-host = ""
-port = 12345
-
-# Client listener
-def client_listener():
-    player_id = 8
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((host, port))
-        s.listen()
-        while True:
-            connection, address = s.accept()
-            print(f"Connected to: {address[0]}:{address[1]}")
-            threading.Thread(target=player_connection, args=(connection, address, player_id)).start()
-            player_id += 1
-
-threading.Thread(target=client_listener).start()
+game_server = GameServer(host="", port=12345, dim_x=30, dim_y=30, n_fruits=30)
+game_server.start_game()
+game_server.listen_for_clients()
 
 app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return get_world_state(world)
-    # world_model = convert_world_model(world)
-    # return world_model
+    return game_server.world.get_world_state()
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)

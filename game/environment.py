@@ -1,12 +1,11 @@
 import random
+import json
 import numpy as np
+from entities import *
 
-
-dim_x, dim_y = 30, 30
-n_fruits = 30
 
 class World:
-    def __init__(self, dim_x=dim_x, dim_y=dim_y, n_fruits=n_fruits):
+    def __init__(self, dim_x=30, dim_y=30, n_fruits=30):
         self.time = 0
         self.dim_x, self.dim_y = dim_x, dim_y
         self.agents = {}
@@ -33,15 +32,29 @@ class World:
         fruit_idx = np.array(fruit_idx)
         board[fruit_idx[:,0], fruit_idx[:,1]] = 2
         return board
-    def add_agent(self, agent):
+    def add_agent(self, agent_id):
+        agent = Agent(idx=agent_id, x=self.dim_x//2, y=self.dim_y//2)
         self.agents[agent.idx] = agent
         self.state[agent.y, agent.x] = agent.idx
+    def remove_agent(self, agent_id):
+        agent = self.agents.pop(agent_id)
+        self.state[agent.y, agent.x] = 0
+        self.agents.pop(agent_id)
     def step(self, actions):
         for agent_id, action in actions.items():
             agent = self.agents[agent_id]
             result = agent.act(action, self.state)
             print(f"{self.time}: Agent {agent.idx} {result}.")
         self.time += 1
+    def get_world_state(self):
+        world_state = {
+            "time": self.time,
+            "state": self.state.tolist(),
+            "scores": {agent_id: agent.score for agent_id, agent in self.agents.items()}
+        }
+        return world_state
+    def get_encoded_world_state(self):
+        return bytes(json.dumps(self.get_world_state()), encoding='utf-8')
     def __repr__(self):
         assert self.state is not None
         return str(self.state)
