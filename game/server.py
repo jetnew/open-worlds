@@ -58,41 +58,34 @@ class GameServer:
 
 # FastAPI endpoint
 app = FastAPI()
+app.game_server = None  # Hacky way to bypass Heroku double threading server
 
-# Ensure Heroku does not start duplicate threads
-heroku_lock = threading.Lock()
-
-@app.on_event("startup")
+@app.on_event("startup")  # For some reason Heroku runs this twice
 def start_game_server():
-    global game_server, heroku_lock
-    with heroku_lock:
-        game_server = GameServer()
-        game_server.start_game()
+    app.game_server = GameServer()
+    app.game_server.start_game()
 
 @app.on_event("shutdown")
 def stop_game_server():
-    global game_server
-    game_server.stop_game()
+    app.game_server.stop_game()
 
 @app.get("/")
 def state():
-    global game_server
-    return game_server.world.get_world_state()
+    return app.game_server.world.get_world_state()
 
 @app.post("/connect/")
 def connect(agent_api: str):
-    global game_server
     # Check if agent exists in database
-    if agent_api in game_server.agent_apis.values():
-        for agent_idx, existing_api in game_server.agent_apis.items():
+    if agent_api in app.game_server.agent_apis.values():
+        for agent_idx, existing_api in app.game_server.agent_apis.items():
             if agent_api == existing_api:
-                game_server.world.add_agent(agent_id=agent_idx)
+                app.game_server.world.add_agent(agent_id=agent_idx)
                 print(f"Player {agent_idx} ({agent_api}) reconnected.")
                 break
     else:
         # Register new agent
-        game_server.world.add_agent(agent_id=game_server.new_player_idx)
-        game_server.agent_apis[game_server.new_player_idx] = agent_api
-        print(f"Player {game_server.new_player_idx} ({agent_api}) registered.")
-        game_server.new_player_idx += 1
+        app.game_server.world.add_agent(agent_id=app.game_server.new_player_idx)
+        app.game_server.agent_apis[app.game_server.new_player_idx] = agent_api
+        print(f"Player {app.game_server.new_player_idx} ({agent_api}) registered.")
+        app.game_server.new_player_idx += 1
     return {"result": "success"}
