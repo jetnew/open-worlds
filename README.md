@@ -19,7 +19,7 @@ Open Worlds is a MMO grid world game where players deploy agents to survive in a
 ```
 git clone https://github.com/jetnew/open-worlds.git
 pip install requirements.txt
-python game/server.py
+uvicorn game.server:app --port 8000
 streamlit run display/streamlit_app.py
 python agent/server.py 8002
 python agent/server.py 8003

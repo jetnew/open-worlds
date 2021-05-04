@@ -10,12 +10,15 @@ get_ram = lambda: psutil.Process(os.getpid()).memory_info().rss // 1e6
 class GameServer:
     def __init__(self):
         self.new_player_idx = 10
+        print("Creating new world")
         self.world = World()
         self.agent_apis = {}
     def start_game(self):
+        print("Starting game")
         self.game = threading.Thread(target=self.run_game)
         self.game.start()
     def stop_game(self):
+        self.play_game = False
         self.game.join()
     def request_thread(self, agent_idx, agent_api):
         try:
@@ -32,7 +35,8 @@ class GameServer:
         for agent_idx, agent_api in self.agent_apis.copy().items():
             self.world.add_agent(agent_id=agent_idx)
 
-        while True:
+        self.play_game = True
+        while self.play_game:
             self.actions = {}
             action_threads = []
 
