@@ -9,12 +9,12 @@ import psutil
 get_ram = lambda: psutil.Process(os.getpid()).memory_info().rss // 1e6
 
 st.title("Open Worlds")
-st.text("Open Worlds is a MMO grid world game where players deploy agents to survive in an online world.")
+st.text("A MMO grid world game where players deploy agents to survive in an online world.")
+st.markdown("GitHub Repository can be found at: [https://github.com/jetnew/open-worlds](https://github.com/jetnew/open-worlds)")
 st_time = st.empty()
 st_scores = st.empty()
 st_state = st.empty()
 st_ram = st.empty()
-st.markdown("[GitHub](https://github.com/jetnew/open-worlds)")
 
 fig, ax = plt.subplots()
 
@@ -31,11 +31,11 @@ while True:
     state = json.loads(response.text)
     game_time = state['time']
     game_state = state['state']
-    game_scores = [str(i) + ':' + str(s) for i, s in state['scores'].items()]
+    game_scores = [f"Agent {str(i)}: {s}" for i, s in state['scores'].items()]
 
     # Display Streamlit elements
     st_time.text(f"Time: {game_time}")
-    st_scores.text(f"Scores: {' '.join(game_scores)}")
+    st_scores.text(f"Scores: {', '.join(game_scores)}")
     ax_obj.set_data(np.array(game_state))
     st_state.pyplot(fig)
 

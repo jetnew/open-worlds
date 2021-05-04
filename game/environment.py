@@ -41,11 +41,17 @@ class World:
         if agent_id in self.agents:
             agent = self.agents.pop(agent_id)
             self.state[agent.y, agent.x] = 0
+    def spawn_fruit(self):
+        fruit_x = random.randint(1, self.dim_x - 1)
+        fruit_y = random.randint(1, self.dim_y - 1)
+        if random.randint(1, 20) == 1 and self.state[fruit_y, fruit_x] == 0:
+            self.state[fruit_y, fruit_x] = 2
     def step(self, actions):
         for agent_id, action in actions.items():
             agent = self.agents[agent_id]
             result = agent.act(action, self.state)
             print(f"{self.time}: Agent {agent.idx} {result}.")
+        self.spawn_fruit()
         self.time += 1
     def get_world_state(self):
         world_state = {
