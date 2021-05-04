@@ -55,8 +55,8 @@ app = FastAPI()
 
 @app.on_event("startup")
 def start_game_server():
-    # Game Server
     global game_server
+    print("STARTING GAME SERVER")
     game_server = GameServer()
     game_server.start_game()
 
