@@ -13,8 +13,10 @@ class GameServer:
         self.world = World()
         self.agent_apis = {}
     def start_game(self):
-        game = threading.Thread(target=self.run_game)
-        game.start()
+        self.game = threading.Thread(target=self.run_game)
+        self.game.start()
+    def stop_game(self):
+        self.game.join()
     def request_thread(self, agent_idx, agent_api):
         try:
             action = request_action(self.world, api=agent_api)
@@ -60,6 +62,11 @@ def start_game_server():
     global game_server
     game_server = GameServer()
     game_server.start_game()
+
+@app.on_event("shutdown")
+def stop_game_server():
+    global game_server
+    game_server.stop_game()
 
 @app.get("/")
 def state():
