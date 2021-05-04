@@ -50,12 +50,15 @@ class GameServer:
 
             # print(f"Ram used: {get_ram()}")
 
-# Game Server
-game_server = GameServer()
-game_server.start_game()
-
 # FastAPI endpoint
 app = FastAPI()
+
+@app.on_event("startup")
+def start_game_server():
+    # Game Server
+    global game_server
+    game_server = GameServer()
+    game_server.start_game()
 
 @app.get("/")
 def state():

@@ -16,6 +16,7 @@ st_ram = st.empty()
 fig, ax = plt.subplots()
 
 response = requests.get('https://open-worlds.herokuapp.com/')
+# response = requests.get('http://127.0.0.1:8000')
 state = json.loads(response.text)
 game_state = state['state']
 ax_obj = ax.imshow(np.array(game_state))
@@ -23,6 +24,7 @@ ax_obj = ax.imshow(np.array(game_state))
 while True:
     # Query from server
     response = requests.get('https://open-worlds.herokuapp.com/')
+    # response = requests.get('http://127.0.0.1:8000')
     state = json.loads(response.text)
     game_time = state['time']
     game_state = state['state']
