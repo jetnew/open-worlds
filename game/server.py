@@ -21,7 +21,7 @@ class GameServer:
         try:
             action = request_action(self.world, api=agent_api)
             self.actions[agent_idx] = action
-        except requests.exceptions.ConnectTimeout:
+        except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
             print(f"Player {agent_idx} ({agent_api}) disconnected.")
             self.world.remove_agent(agent_id=agent_idx)
             if agent_idx in self.actions:
