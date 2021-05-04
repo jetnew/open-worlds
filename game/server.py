@@ -50,6 +50,10 @@ class GameServer:
 
             # print(f"Ram used: {get_ram()}")
 
+# Game Server
+game_server = GameServer()
+game_server.start_game()
+
 # FastAPI endpoint
 app = FastAPI()
 
@@ -77,8 +81,5 @@ def connect(agent_api: str):
     return {"result": "success"}
 
 if __name__ == "__main__":
-    game_server = GameServer()
-    game_server.start_game()
-
     # Start FastAPI
     uvicorn.run(app, host="127.0.0.1", port=8000)
