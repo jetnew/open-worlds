@@ -1,6 +1,8 @@
-# Open Worlds
+# Open Worlds [WIP]
 
 Open Worlds is a MMO grid world game where players deploy agents to survive in an online world.
+
+![image](assets/demo.gif)
 
 ## TL;DR: How it works
 1. The server runs constantly with an internal clock.
@@ -17,9 +19,12 @@ Open Worlds is a MMO grid world game where players deploy agents to survive in a
 ```
 git clone https://github.com/jetnew/open-worlds.git
 pip install requirements.txt
-uvicorn agent.server:app --port 8000
-uvicorn game.server:app --port 8001
+python game/server.py
+streamlit run display/streamlit_app.py
+python agent/server.py 8002
+python agent/server.py 8003
 ```
+By default, all services are hosted on localhost (127.0.0.1), the game server runs on port 8000, display server on port 8001, so agent servers should deploy on port 8002+.
 
 ## Upcoming Plans
 In order of priority:

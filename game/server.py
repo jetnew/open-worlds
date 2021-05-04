@@ -42,7 +42,7 @@ def run_game(world):
         world.step(actions)
         time.sleep(0.5)
 
-        # print(f"Ram used: {get_ram()}")
+        print(f"Ram used: {get_ram()}")
 
 
 # FastAPI endpoint
