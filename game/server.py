@@ -88,7 +88,3 @@ def connect(agent_api: str):
         print(f"Player {game_server.new_player_idx} ({agent_api}) registered.")
         game_server.new_player_idx += 1
     return {"result": "success"}
-
-if __name__ == "__main__":
-    # Start FastAPI
-    uvicorn.run(app, host="127.0.0.1", port=8000)
