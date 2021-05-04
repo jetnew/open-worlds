@@ -31,30 +31,31 @@ class GameServer:
                 self.actions.pop(agent_idx)
     def run_game(self):
         """Game thread"""
-        # Initialise player list
-        for agent_idx, agent_api in self.agent_apis.copy().items():
-            self.world.add_agent(agent_id=agent_idx)
+        with threading.Lock():
+            # Initialise player list
+            for agent_idx, agent_api in self.agent_apis.copy().items():
+                self.world.add_agent(agent_id=agent_idx)
 
-        self.play_game = True
-        while self.play_game:
-            self.actions = {}
-            action_threads = []
+            self.play_game = True
+            while self.play_game:
+                self.actions = {}
+                action_threads = []
 
-            # Thread request actions
-            for agent_idx, agent in self.world.agents.copy().items():
-                agent_api = self.agent_apis[agent_idx]
-                t = threading.Thread(target=self.request_thread, args=(agent_idx, agent_api))
-                t.start()
-                action_threads.append(t)
+                # Thread request actions
+                for agent_idx, agent in self.world.agents.copy().items():
+                    agent_api = self.agent_apis[agent_idx]
+                    t = threading.Thread(target=self.request_thread, args=(agent_idx, agent_api))
+                    t.start()
+                    action_threads.append(t)
 
-            # Wait for all action threads to complete
-            for t in action_threads:
-                t.join()
+                # Wait for all action threads to complete
+                for t in action_threads:
+                    t.join()
 
-            self.world.step(self.actions)
-            time.sleep(0.5)
+                self.world.step(self.actions)
+                time.sleep(0.5)
 
-            # print(f"Ram used: {get_ram()}")
+                # print(f"Ram used: {get_ram()}")
 
 # FastAPI endpoint
 app = FastAPI()
