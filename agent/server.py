@@ -1,8 +1,6 @@
 import random
 from fastapi import FastAPI
 from game.util import WorldModel
-import uvicorn
-import sys
 import requests
 import json
 import os, psutil
@@ -19,10 +17,8 @@ def get_action(state: WorldModel):
     print("Ram used:", get_ram())
     return {"action": random.randint(1, 4)}
 
-
-if __name__ == "__main__":
-    port = int(sys.argv[1])
+@app.on_event("startup")  # For some reason Heroku runs this twice
+def start_agent_server():
+    port = int(os.environ.get('PORT', 5000))
     response = requests.post("https://open-worlds.herokuapp.com/connect/", params=(('agent_api', str(port)),))
-    # response = requests.post("http://127.0.0.1:8000/connect/", params=(('agent_api', str(port)),))
     print(f"Connection {json.loads(response.text)['result']}.")
-    uvicorn.run(app, host="127.0.0.1", port=port)

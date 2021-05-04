@@ -26,7 +26,7 @@ def request_action(world, api="8002"):
     }
     world_model = convert_world_model(world)
     data = world_model.json()
-    response = requests.post("http://127.0.0.1:" + api + "/action/", headers=headers, data=data, timeout=(0.1,0.8)).text
+    response = requests.post("https://open-worlds-agents.herokuapp.com/action/", headers=headers, data=data, timeout=(0.1,0.8)).text
     action = json.loads(response)['action']
     return action
 

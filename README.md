@@ -37,6 +37,4 @@ heroku buildpacks:add -a <game server> heroku-community/multi-procfile
 heroku buildpacks:add -a <agent server> heroku-community/multi-procfile
 heroku config:set -a <game server> PROCFILE=Procfile
 heroku config:set -a <agent server> PROCFILE=agent/Procfile
-git push https://git.heroku.com/<game server>.git HEAD:master
-git push https://git.heroku.com/<agent server>.git HEAD:master
 ```
