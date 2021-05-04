@@ -26,8 +26,17 @@ python agent/server.py 8003
 ```
 By default, all services are hosted on localhost (127.0.0.1), the game server runs on port 8000, display server on port 8001, so agent servers should deploy on port 8002+.
 
-## Upcoming Plans
-In order of priority:
-1. Improve game display latency.
-2. Log running time for each component.
-3. Add more game mechanics.
+## Server Deployment [WIP]
+Set web concurrency to 1:
+```
+heroku config:set -a <game server> WEB_CONCURRENCY=1
+```
+Use 2 procfiles for game and agent servers:
+```
+heroku buildpacks:add -a <game server> heroku-community/multi-procfile
+heroku buildpacks:add -a <agent server> heroku-community/multi-procfile
+heroku config:set -a <game server> PROCFILE=Procfile
+heroku config:set -a <agent server> PROCFILE=agent/Procfile
+git push https://git.heroku.com/<game server>.git HEAD:master
+git push https://git.heroku.com/<agent server>.git HEAD:master
+```
