@@ -46,6 +46,8 @@ class GameServer:
                 t.join()
 
             self.world.step(self.actions)
+            print(self.actions)
+            print(self.world.state)
             time.sleep(0.5)
 
             # print(f"Ram used: {get_ram()}")
@@ -56,7 +58,6 @@ app = FastAPI()
 @app.on_event("startup")
 def start_game_server():
     global game_server
-    print("STARTING GAME SERVER")
     game_server = GameServer()
     game_server.start_game()
 
