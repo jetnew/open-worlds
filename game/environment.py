@@ -14,6 +14,7 @@ class World:
     def init_state(self, dim_x, dim_y):
         board = np.zeros((dim_x, dim_y), dtype=int)
         board = self.create_borders(board)
+        print("Dropping fruits")
         board = self.drop_fruits(board, n=self.n_fruits)
         return board
     def create_borders(self, board):
