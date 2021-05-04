@@ -55,10 +55,12 @@ app = FastAPI()
 
 @app.get("/")
 def state():
+    global game_server
     return game_server.world.get_world_state()
 
 @app.post("/connect/")
 def connect(agent_api: str):
+    global game_server
     # Check if agent exists in database
     if agent_api in game_server.agent_apis.values():
         for agent_idx, existing_api in game_server.agent_apis.items():
