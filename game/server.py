@@ -13,10 +13,10 @@ class GameServer:
         print("Creating new world")
         self.world = World()
         self.agent_apis = {}
-    # def start_game(self):
-    #     print("Starting game")
-    #     self.game = threading.Thread(target=self.run_game)
-    #     self.game.start()
+    def start_game(self):
+        print("Starting game")
+        self.game = threading.Thread(target=self.run_game)
+        self.game.start()
     def stop_game(self):
         self.play_game = False
         self.game.join()
@@ -31,7 +31,6 @@ class GameServer:
                 self.actions.pop(agent_idx)
     def run_game(self):
         """Game thread"""
-        print("Starting game")
         # Initialise player list
         for agent_idx, agent_api in self.agent_apis.copy().items():
             self.world.add_agent(agent_id=agent_idx)
@@ -60,12 +59,13 @@ class GameServer:
 # FastAPI endpoint
 app = FastAPI()
 
+# WARNING: For some reason Heroku runs this twice, so run heroku config:set WEB_CONCURRENCY=1
+# Source: https://stackoverflow.com/questions/44292627/python-app-on-heroku-platform-seems-to-start-on-two-threads
 @app.on_event("startup")  # For some reason Heroku runs this twice
 def start_game_server():
-    global game_server, heroku_thread
+    global game_server
     game_server = GameServer()
-    heroku_thread = threading.Thread(target=game_server.run_game)
-    heroku_thread.start()
+    game_server.start_game()
 
 @app.on_event("shutdown")
 def stop_game_server():
