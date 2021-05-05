@@ -6,3 +6,6 @@ uvicorn~=0.13.4
 psutil~=5.8.0
 streamlit~=0.81.0
 matplotlib~=3.4.1
+pandas~=1.2.4
+opencv-python~=4.5.1.48
+Pillow~=8.2.0
