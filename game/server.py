@@ -91,9 +91,8 @@ def state():
     return game_server.world.get_world_state()
 
 @app.post("/connect/")
-def connect(port: str, request: Request):
+def connect(agent_api: str, request: Request):
     global game_server
-    agent_api = request.scope['type'] + "://" + request.client.host + ':' + port
     # Check if agent exists in database
     if game_server.agent_database.is_agent_api_registered(agent_api):
         agent_idx = game_server.agent_database.get_agent_idx_from_api(agent_api)
