@@ -33,3 +33,6 @@ heroku buildpacks:add -a <agent server> heroku-community/multi-procfile
 heroku config:set -a <game server> PROCFILE=Procfile
 heroku config:set -a <agent server> PROCFILE=agent/Procfile
 ```
+
+# Development
+* To update submodule [open-worlds-agents](https://github.com/jetnew/open-worlds-agents), run `git fetch` and `git merge origin/master` ([source](https://git-scm.com/book/en/v2/Git-Tools-Submodules)).

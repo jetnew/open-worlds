@@ -1,0 +1,3 @@
+[submodule "open-worlds-agents"]
+	path = open-worlds-agents
+	url = https://github.com/jetnew/open-worlds-agents
