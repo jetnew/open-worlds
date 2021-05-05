@@ -12,7 +12,7 @@ By allowing players to host their own scripts, gameplay can scale to complex eme
 
 ## Quickstart
 ```
-git clone https://github.com/jetnew/open-worlds.git
+git clone --recurse-submodules https://github.com/jetnew/open-worlds.git
 pip install requirements.txt
 uvicorn game.server:app --port 8000
 streamlit run display/streamlit_app.py
