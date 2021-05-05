@@ -6,4 +6,3 @@ uvicorn~=0.13.4
 psutil~=5.8.0
 streamlit~=0.81.0
 matplotlib~=3.4.1
-netifaces~=0.10.9
