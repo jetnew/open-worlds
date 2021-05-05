@@ -21,23 +21,27 @@ class GameServer:
     def stop_game(self):
         self.play_game = False
         self.game.join()
-    def request_action(self, api="http://127.0.0.1:8002"):
+    def disconnect_agent(self, agent_idx, agent_api):
+        print(f"Player {agent_idx} ({agent_api}) disconnected.")
+        self.world.remove_agent(agent_id=agent_idx)
+        if agent_idx in self.actions:
+            self.actions.pop(agent_idx)
+        self.agent_database.deactivate_agent_api(agent_idx)
+    def request_action(self, agent_idx, agent_api):
         world_model = convert_world_model(self.world)
         data = world_model.json()
-        response = requests.post(f"{api}/action/", data=data, timeout=(0.1, 0.8)).text
-        # response = requests.post("https://open-worlds-agents.herokuapp.com/action/", data=data, timeout=(0.1, 0.8)).text
-        return json.loads(response)['action']
+        response = requests.post(f"{agent_api}/action/", data=data, timeout=(0.1, 0.8)).text
+        if not response:
+            self.disconnect_agent(agent_idx, agent_api)
+        else:
+            return json.loads(response)['action']
     def request_thread(self, agent_idx, agent_api):
         try:
-            action = self.request_action(api=agent_api)
+            action = self.request_action(agent_idx, agent_api)
             self.actions[agent_idx] = action
             self.agent_database.activate_agent_api(agent_idx, agent_api)
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError):
-            print(f"Player {agent_idx} ({agent_api}) disconnected.")
-            self.world.remove_agent(agent_id=agent_idx)
-            if agent_idx in self.actions:
-                self.actions.pop(agent_idx)
-            self.agent_database.deactivate_agent_api(agent_idx)
+            self.disconnect_agent(agent_idx, agent_api)
     def run_game(self):
         """Game thread"""
         # Initialise player list
