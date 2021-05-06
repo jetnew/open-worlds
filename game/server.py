@@ -31,10 +31,11 @@ class GameServer:
         world_model = convert_world_model(self.world)
         data = world_model.json()
         response = requests.post(f"{agent_api}/action/", data=data, timeout=(0.1, 0.8)).text
-        if not response:
-            self.disconnect_agent(agent_idx, agent_api)
-        else:
+        try:
             return json.loads(response)['action']
+        except json.decoder.JSONDecodeError:
+            self.disconnect_agent(agent_idx, agent_api)
+
     def request_thread(self, agent_idx, agent_api):
         try:
             action = self.request_action(agent_idx, agent_api)
