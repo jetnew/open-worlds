@@ -1,12 +1,7 @@
 import time
-import json
-import requests
-
 from typing import List, Dict
 from pydantic import BaseModel
-
 from game.environment import *
-from game.entities import *
 
 
 def random_game(world):
@@ -17,6 +12,7 @@ def random_game(world):
         # take random actions
         world.step(actions=[random.randint(0, 4), random.randint(0, 4)])
         time.sleep(1)
+
 
 class WorldModel(BaseModel):
     """Pydantic model for FastAPI usage"""
@@ -31,4 +27,3 @@ def convert_world_model(world):
                              state=world.state.tolist(),
                              scores={agent_id: agent.score for agent_id, agent in world.agents.items()})
     return world_model
-

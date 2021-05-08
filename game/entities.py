@@ -24,13 +24,16 @@ class Result(Enum):
     DOWN = "moved down"
     FRUIT = "ate fruit"
 
+
 class Agent:
     def __init__(self, idx=9, x=1, y=1):
         self.idx = idx
         self.x, self.y = x, y
         self.score = 0
+
     def nothing(self, state):
         return [Result.NOTHING]
+
     def left(self, state):
         """
         Results:
@@ -45,6 +48,7 @@ class Agent:
             results.append(Result.FRUIT)
             self.eat_fruit(state)
         return results
+
     def right(self, state):
         if self.check_wall(state, RIGHT):
             return [Result.FAIL]
@@ -54,6 +58,7 @@ class Agent:
             results.append(Result.FRUIT)
             self.eat_fruit(state)
         return results
+
     def up(self, state):
         if self.check_wall(state, UP):
             return [Result.FAIL]
@@ -63,6 +68,7 @@ class Agent:
             results.append(Result.FRUIT)
             self.eat_fruit(state)
         return results
+
     def down(self, state):
         if self.check_wall(state, DOWN):
             return [Result.FAIL]
@@ -72,6 +78,7 @@ class Agent:
             results.append(Result.FRUIT)
             self.eat_fruit(state)
         return results
+
     def act(self, action, state):
         results = [Result.FAIL]
         state[self.y][self.x] = 0  # clear past position
@@ -87,19 +94,23 @@ class Agent:
             results = self.down(state)
         self.update_state(state)
         return ", ".join([r.value for r in results])
+
     def eat_fruit(self, state):
         self.score += FRUIT_SCORE
+
     def check_wall(self, state, action):
         if action == LEFT:
-            return state[self.y,self.x-1] == WALL_ID
+            return state[self.y, self.x - 1] == WALL_ID
         elif action == RIGHT:
-            return state[self.y,self.x+1] == WALL_ID
+            return state[self.y, self.x + 1] == WALL_ID
         elif action == UP:
-            return state[self.y-1,self.x] == WALL_ID
+            return state[self.y - 1, self.x] == WALL_ID
         elif action == DOWN:
             return state[self.y + 1, self.x] == WALL_ID
         raise Exception(f"Action movement invalid. Expected: [1, 2, 3, 4], Given: {action}")
+
     def check_fruit(self, state):
         return state[self.y, self.x] == FRUIT_ID
+
     def update_state(self, state):
-        state[self.y,self.x] = self.idx
+        state[self.y, self.x] = self.idx
