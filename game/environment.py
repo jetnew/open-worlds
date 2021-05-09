@@ -132,13 +132,13 @@ class World:
 
 
 if __name__ == "__main__":
-    world = World(10,10)
+    world = World(10, 10)
     world.add_agent(10)
 
     # agent = RandomAgent(10)
     agent = GreedyAgent(10)
 
-    for _ in range(100):
+    for _ in range(50):
         actions = {10: agent.get_action(world.state)}
         world.step(actions)
         print(world)
