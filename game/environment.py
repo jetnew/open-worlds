@@ -1,7 +1,7 @@
 import random
-import json
 import numpy as np
 from game.entities import *
+from agents.template_agents import RandomAgent, GreedyAgent
 
 
 class World:
@@ -106,6 +106,9 @@ class World:
         self.spawn_fruit()
         self.time += 1
 
+    def get_scores(self):
+        return {agent_id: agent.score for agent_id, agent in self.agents.items()}
+
     def get_world_state(self):
         """
         Return the current state of the world.
@@ -115,7 +118,7 @@ class World:
         world_state = {
             "time": self.time,
             "state": self.state.tolist(),
-            "scores": {agent_id: agent.score for agent_id, agent in self.agents.items()}
+            "scores": self.get_scores()
         }
         return world_state
 
@@ -129,4 +132,15 @@ class World:
 
 
 if __name__ == "__main__":
-    world = World()
+    world = World(10,10)
+    world.add_agent(10)
+
+    # agent = RandomAgent(10)
+    agent = GreedyAgent(10)
+
+    for _ in range(100):
+        actions = {10: agent.get_action(world.state)}
+        world.step(actions)
+        print(world)
+
+    print(world.get_scores())
