@@ -8,14 +8,28 @@ class GameState:
         self.x_dim, self.y_dim = shape
         self.state = np.zeros((self.y_dim, self.x_dim))
 
-    def get_state(self):
+    def get(self):
         return self.state
 
-    def query_state(self, x, y):
+    def query(self, x, y):
         return self.state[y, x]
 
     def __repr__(self):
         return str(self.state)
+
+
+class BorderState(GameState):
+    """
+    Borders of the world.
+    """
+    def __init__(self, shape=(30, 30)):
+        super().__init__(shape)
+
+    def init_state(self):
+        self.state[0, :] = 1  # top wall
+        self.state[-1, :] = 1  # bottom wall
+        self.state[:, 0] = 1  # left wall
+        self.state[:, -1] = 1  # right wall
 
 
 class LakeState(GameState):

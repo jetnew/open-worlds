@@ -2,6 +2,7 @@ import random
 import numpy as np
 from game.entities import *
 from agents.template_agents import RandomAgent, GreedyAgent
+from game.states import BorderState, LakeState, TreeState, FruitState
 
 
 class World:
@@ -19,6 +20,7 @@ class World:
         self.agents = {}
         self.n_fruits = n_fruits
         self.state = self.init_state()
+
 
     def init_state(self):
         """

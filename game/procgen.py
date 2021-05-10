@@ -25,7 +25,7 @@ def generate_points(state, n):
 
 def generate_clusters(x_dim, y_dim):
     gen = OpenSimplex(seed=random.randint(0,1000))
-    factor = (x_dim+y_dim) / 2
+    factor = (x_dim+y_dim) / 3
     grid = []
     for y in range(y_dim):
         row = []
@@ -39,7 +39,8 @@ def generate_clusters(x_dim, y_dim):
 
 
 if __name__ == "__main__":
-    grid = generate_clusters(30, 30)
+    grid = generate_clusters(50, 50)
     plt.title("Lake Generation")
     plt.imshow(grid)
+    print(grid)
     plt.show()
